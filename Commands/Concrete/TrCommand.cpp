@@ -44,7 +44,7 @@ void TrCommand::handle(Interpreter* interpreter) const
     while (i != std::string::npos)
     {
         text.replace(i, replacementValue.size(), replaceWith);
-        pos += replaceWith.size();
+        pos = i + replaceWith.size();
         i = text.find(replacementValue, pos);
     }
 
