@@ -1,0 +1,53 @@
+#include "Interpreter.h"
+
+#include <iostream>
+
+#include "Parser.h"
+#include "../Commands/Exceptions/UnknownCommand.h"
+
+Interpreter::Interpreter(const char commandPromptChar, Reader* reader, Parser* parser)
+    : commandPromptChar(commandPromptChar), reader(reader), parser(parser)
+{
+}
+
+Interpreter::~Interpreter()
+{
+    delete this->reader;
+    delete this->parser;
+}
+
+void Interpreter::setCommandPromptChar(const char ch)
+{
+    this->commandPromptChar = ch;
+}
+
+void Interpreter::run()
+{
+    while (true)
+    {
+        std::cout << this->commandPromptChar << " ";
+
+        std::string line = this->reader->readLine();
+
+        if (!this->reader->hasMore() && line.empty())
+        {
+            std::cout << "Goodbye!" << std::endl;
+            break;
+        }
+
+        try
+        {
+            const auto* pipeline = this->parser->parse(line);
+            pipeline->execute(this);
+            delete pipeline;
+        }
+        catch (UnknownCommand& e)
+        {
+            std::cout << "Unknown command: " << e.what() << std::endl;
+        }
+        catch (std::exception& e)
+        {
+            std::cout << "ERROR: " << e.what() << std::endl;
+        }
+    }
+}
