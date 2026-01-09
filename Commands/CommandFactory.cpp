@@ -11,6 +11,7 @@
 #include "Argument/Argument.h"
 #include "Concrete/DateCommand.h"
 #include "Concrete/EchoCommand.h"
+#include "Concrete/HeadCommand.h"
 #include "Concrete/PromptCommand.h"
 #include "Concrete/RmCommand.h"
 #include "Concrete/TimeCommand.h"
@@ -32,7 +33,8 @@ bool CommandFactory::commandNameIsSupported(const std::string& commandName)
         commandName == "truncate" ||
         commandName == "rm" ||
         commandName == "wc" ||
-        commandName == "tr";
+        commandName == "tr" ||
+        commandName == "head";
 }
 
 Command* CommandFactory::make(const std::string& commandName, const std::vector<Argument*>& arguments,
@@ -120,6 +122,11 @@ Command* CommandFactory::resolveFromName(const std::string& commandName, const s
     if (commandName == "tr")
     {
         return new TrCommand(outputter, arguments, opts);
+    }
+
+    if (commandName == "head")
+    {
+        return new HeadCommand(outputter, arguments, opts);
     }
 
     throw UnknownCommand(commandName);

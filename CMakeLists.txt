@@ -57,4 +57,6 @@ add_executable(PROJEKAT main.cpp
         Commands/Argument/CinArgument.cpp
         Commands/Argument/CinArgument.h
         Commands/Concrete/TrCommand.cpp
-        Commands/Concrete/TrCommand.h)
+        Commands/Concrete/TrCommand.h
+        Commands/Concrete/HeadCommand.cpp
+        Commands/Concrete/HeadCommand.h)
