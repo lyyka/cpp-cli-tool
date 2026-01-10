@@ -30,7 +30,6 @@ void CommandPipeline::execute(Interpreter* i) const
     else if (this->commands.size() > 1)
     {
         std::string lastOutput;
-        auto* localOutputStream = new StringOutputter(lastOutput);
         for (size_t idx = 0; idx < this->commands.size(); idx++)
         {
             auto* currentCommand = this->commands[idx];
@@ -47,18 +46,19 @@ void CommandPipeline::execute(Interpreter* i) const
              */
             if (idx != this->commands.size() - 1)
             {
-                currentCommand->setOutputter(localOutputStream);
+                // Each command should have its own outputter instance,
+                // so we can clean them up properly in the destructor.
+                currentCommand->setOutputter(new StringOutputter(lastOutput));
             }
             currentCommand->execute(i);
         }
-        delete localOutputStream;
     }
 }
 
 CommandPipeline::~CommandPipeline()
 {
-    // for (const auto c : this->commands)
-    // {
-    //     delete c;
-    // }
+    for (const auto c : this->commands)
+    {
+        delete c;
+    }
 }

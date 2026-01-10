@@ -11,7 +11,7 @@
 class Parser
 {
 public:
-    Parser();
+    Parser(Outputter* overrideOutputter = nullptr);
     ~Parser();
     [[nodiscard]] CommandPipeline* parse(const std::string& commandLine);
 private:
@@ -32,6 +32,7 @@ private:
     [[nodiscard]] std::string getParsableChunk(const std::string& commandLine, size_t maxLength = 512);
 
     CommandFactory* commandFactory;
+    Outputter* overrideOutputter;
 };
 
 

@@ -8,7 +8,8 @@
 #include "../Commands/Argument/FilenameArgument.h"
 #include "Exceptions/InvalidCharactersFound.h"
 
-Parser::Parser()
+Parser::Parser(Outputter* overrideOutputter)
+    : overrideOutputter(overrideOutputter)
 {
     this->commandFactory = new CommandFactory();
 }
@@ -188,7 +189,8 @@ CommandPipeline* Parser::parse(const std::string& commandLine)
                 commandName,
                 arguments,
                 opts,
-                outputRedirect
+                outputRedirect,
+                this->overrideOutputter
             );
 
             /*
@@ -372,6 +374,12 @@ std::string Parser::getParsableChunk(const std::string& commandLine, size_t maxL
     if (newLinePos != std::string::npos)
     {
         return commandLine.substr(0, newLinePos);
+    }
+
+    size_t returnPos = commandLine.find('\r');
+    if (returnPos != std::string::npos)
+    {
+        return commandLine.substr(0, returnPos);
     }
 
     return commandLine;

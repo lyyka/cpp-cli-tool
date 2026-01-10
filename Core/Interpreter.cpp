@@ -31,7 +31,6 @@ void Interpreter::run()
 
         if (!this->reader->hasMore() && line.empty())
         {
-            std::cout << "Goodbye!" << std::endl;
             break;
         }
 
@@ -44,10 +43,6 @@ void Interpreter::run()
         catch (UnknownCommand& e)
         {
             std::cout << "Unknown command: " << e.what() << std::endl;
-        }
-        catch (std::exception& e)
-        {
-            std::cout << "ERROR: " << e.what() << std::endl;
         }
     }
 }

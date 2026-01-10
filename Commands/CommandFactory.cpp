@@ -9,6 +9,7 @@
 
 #include "../Core/Reader/CommandLineReader.h"
 #include "Argument/Argument.h"
+#include "Concrete/BatchCommand.h"
 #include "Concrete/DateCommand.h"
 #include "Concrete/EchoCommand.h"
 #include "Concrete/HeadCommand.h"
@@ -34,11 +35,12 @@ bool CommandFactory::commandNameIsSupported(const std::string& commandName)
         commandName == "rm" ||
         commandName == "wc" ||
         commandName == "tr" ||
-        commandName == "head";
+        commandName == "head" ||
+        commandName == "batch";
 }
 
 Command* CommandFactory::make(const std::string& commandName, const std::vector<Argument*>& arguments,
-    const std::vector<Argument*>& opts, Token* outputRedirect)
+    const std::vector<Argument*>& opts, Token* outputRedirect, Outputter* defaultOutputter)
 {
     // Early exception to avoid hanging on input for arguments
     // when an unknown command is passed in.
@@ -48,11 +50,11 @@ Command* CommandFactory::make(const std::string& commandName, const std::vector<
     }
 
     return this->resolveFromName(
-        commandName, arguments, opts, this->resolveOutputter(outputRedirect)
+        commandName, arguments, opts, this->resolveOutputter(outputRedirect, defaultOutputter)
     );
 }
 
-Outputter* CommandFactory::resolveOutputter(Token* outputRedirect)
+Outputter* CommandFactory::resolveOutputter(Token* outputRedirect, Outputter* defaultOutputter)
 {
     Outputter* outputter;
 
@@ -68,7 +70,12 @@ Outputter* CommandFactory::resolveOutputter(Token* outputRedirect)
             // > means overwrite mode (truncate)
             outputter = new FileOutputter(outputRedirect->getToken().substr(1), std::ios::out | std::ios::trunc);
         }
-    } else
+    }
+    else if (defaultOutputter != nullptr)
+    {
+        outputter = defaultOutputter;
+    }
+    else
     {
         outputter = new ConsoleOutputter();
     }
@@ -127,6 +134,11 @@ Command* CommandFactory::resolveFromName(const std::string& commandName, const s
     if (commandName == "head")
     {
         return new HeadCommand(outputter, arguments, opts);
+    }
+
+    if (commandName == "batch")
+    {
+        return new BatchCommand(outputter, arguments, opts);
     }
 
     throw UnknownCommand(commandName);

@@ -26,7 +26,7 @@ bool RmCommand::expectsOutput() const
 
 void RmCommand::handle(Interpreter* interpreter) const
 {
-    const std::string filename = this->argument.at(0)->getValue();
+    const std::string filename = this->argument.at(0)->getToken()->getToken();
     if (std::remove(filename.c_str()) != 0)
     {
         this->errorOutputStream << "RmCommand: Could not remove file " << filename << std::endl;

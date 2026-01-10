@@ -26,7 +26,7 @@ bool TruncateCommand::expectsOutput() const
 
 void TruncateCommand::handle(Interpreter* interpreter) const
 {
-    const std::string filename = this->argument.at(0)->getValue();
+    const std::string filename = this->argument.at(0)->getToken()->getToken();
     std::ofstream file(filename, std::ofstream::trunc);
     if (!file.is_open())
     {

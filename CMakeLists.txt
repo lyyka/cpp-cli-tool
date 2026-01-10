@@ -59,4 +59,6 @@ add_executable(PROJEKAT main.cpp
         Commands/Concrete/TrCommand.cpp
         Commands/Concrete/TrCommand.h
         Commands/Concrete/HeadCommand.cpp
-        Commands/Concrete/HeadCommand.h)
+        Commands/Concrete/HeadCommand.h
+        Commands/Concrete/BatchCommand.cpp
+        Commands/Concrete/BatchCommand.h)

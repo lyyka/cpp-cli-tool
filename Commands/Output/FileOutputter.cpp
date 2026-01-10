@@ -16,7 +16,8 @@ FileOutputter::FileOutputter(const std::string& filename, const std::ios_base::o
 
 FileOutputter* FileOutputter::output(const std::string& content)
 {
-    this->outputStream << content << std::endl;
+    this->outputStream << content;
+    this->outputStream.flush();
     return this;
 }
 

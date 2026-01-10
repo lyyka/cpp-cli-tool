@@ -13,10 +13,10 @@
 class CommandFactory
 {
 public:
-    [[nodiscard]] Command* make(const std::string& commandName, const std::vector<Argument*>& arguments, const std::vector<Argument*>& opts, Token* outputRedirect = nullptr);
+    [[nodiscard]] Command* make(const std::string& commandName, const std::vector<Argument*>& arguments, const std::vector<Argument*>& opts, Token* outputRedirect = nullptr, Outputter* defaultOutputter = nullptr);
 private:
     [[nodiscard]] bool commandNameIsSupported(const std::string& commandName);
-    [[nodiscard]] Outputter* resolveOutputter(Token* outputRedirect = nullptr);
+    [[nodiscard]] Outputter* resolveOutputter(Token* outputRedirect = nullptr, Outputter* defaultOutputter = nullptr);
     [[nodiscard]] Command* resolveFromName(const std::string& commandName, const std::vector<Argument*>& arguments, const std::vector<Argument*>& opts, Outputter* outputter);
 };
 
