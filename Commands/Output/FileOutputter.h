@@ -16,8 +16,11 @@ public:
     explicit FileOutputter(const std::string& filename, std::ios_base::openmode mode);
     ~FileOutputter() override;
     FileOutputter* output(const std::string& content) override;
+    FileOutputter* clone() const override;
 private:
     std::ofstream outputStream;
+    std::string filename;
+    std::ios_base::openmode mode;
 };
 
 

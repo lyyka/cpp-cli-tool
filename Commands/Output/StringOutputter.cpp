@@ -16,3 +16,8 @@ StringOutputter* StringOutputter::output(const std::string& content)
     this->outputStream += content;
     return this;
 }
+
+StringOutputter* StringOutputter::clone() const
+{
+    return new StringOutputter(this->outputStream);
+}

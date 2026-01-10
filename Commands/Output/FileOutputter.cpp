@@ -5,6 +5,7 @@
 #include "FileOutputter.h"
 
 FileOutputter::FileOutputter(const std::string& filename, const std::ios_base::openmode mode)
+    : filename(filename), mode(mode)
 {
     this->outputStream.open(filename, mode);
 
@@ -24,4 +25,9 @@ FileOutputter* FileOutputter::output(const std::string& content)
 FileOutputter::~FileOutputter()
 {
     this->outputStream.close();
+}
+
+FileOutputter* FileOutputter::clone() const
+{
+    return new FileOutputter(this->filename, this->mode);
 }

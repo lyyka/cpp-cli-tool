@@ -54,33 +54,35 @@ Command* CommandFactory::make(const std::string& commandName, const std::vector<
     );
 }
 
-Outputter* CommandFactory::resolveOutputter(Token* outputRedirect, Outputter* defaultOutputter)
+Outputter* CommandFactory::resolveOutputter(Token* outputRedirect, const Outputter* defaultOutputter)
 {
-    Outputter* outputter;
+    std::unique_ptr<Outputter> outputter;
 
     if (outputRedirect != nullptr)
     {
         if (outputRedirect->isDoubleOutputRedirect())
         {
             // >> means append mode
-            outputter = new FileOutputter(outputRedirect->getToken().substr(2), std::ios::out | std::ios::app);
+            outputter = std::make_unique<FileOutputter>(outputRedirect->getToken().substr(2), std::ios::out | std::ios::app);
         }
         else
         {
             // > means overwrite mode (truncate)
-            outputter = new FileOutputter(outputRedirect->getToken().substr(1), std::ios::out | std::ios::trunc);
+            outputter = std::make_unique<FileOutputter>(outputRedirect->getToken().substr(1), std::ios::out | std::ios::trunc);
         }
     }
     else if (defaultOutputter != nullptr)
     {
-        outputter = defaultOutputter;
+        // Clone the default outputter to create a separate instance for this command
+        outputter.reset(defaultOutputter->clone());
     }
     else
     {
-        outputter = new ConsoleOutputter();
+        outputter = std::make_unique<ConsoleOutputter>();
     }
 
-    return outputter;
+    // Transfer ownership to caller (Command destructor will delete it)
+    return outputter.release();
 }
 
 Command* CommandFactory::resolveFromName(const std::string& commandName, const std::vector<Argument*>& arguments,

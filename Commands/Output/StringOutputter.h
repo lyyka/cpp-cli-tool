@@ -12,6 +12,7 @@ class StringOutputter: public Outputter
 public:
     explicit StringOutputter(std::string& output);
     StringOutputter* output(const std::string& content) override;
+    [[nodiscard]] StringOutputter* clone() const override;
 private:
     std::string& outputStream;
 };

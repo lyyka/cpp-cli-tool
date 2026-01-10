@@ -11,3 +11,8 @@ ConsoleOutputter* ConsoleOutputter::output(const std::string& content)
     std::cout << content << std::endl;
     return this;
 }
+
+ConsoleOutputter* ConsoleOutputter::clone() const
+{
+    return new ConsoleOutputter();
+}

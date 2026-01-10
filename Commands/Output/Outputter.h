@@ -13,6 +13,7 @@ public:
     Outputter();
     virtual ~Outputter();
     virtual Outputter* output(const std::string& content) = 0;
+    [[nodiscard]] virtual Outputter* clone() const = 0;
 };
 
 #endif //PROJEKAT_OUTPUTTER_H

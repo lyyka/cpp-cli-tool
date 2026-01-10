@@ -13,6 +13,7 @@ class ConsoleOutputter: public Outputter
 {
 public:
     ConsoleOutputter* output(const std::string& content) override;
+    [[nodiscard]] ConsoleOutputter* clone() const override;
 };
 
 
