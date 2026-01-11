@@ -13,5 +13,13 @@ IntegralArgument::IntegralArgument(Token* token)
 
 std::string IntegralArgument::getValue()
 {
-    return this->token->getToken().substr(1, this->token->getToken().size() - 2);
+    std::string rawValue = this->token->getToken().substr(1, this->token->getToken().size() - 2);
+
+    // Escape the \n sequence with actual \n char
+    size_t pos;
+    while ((pos = rawValue.find("\\n")) != std::string::npos) {
+        rawValue.replace(pos, 2, "\n");
+    }
+
+    return rawValue;
 }
