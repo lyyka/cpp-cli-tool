@@ -32,17 +32,30 @@ void WcCommand::handle(Interpreter* interpreter) const
     {
         this->outputStream->output(std::to_string(text.size()));
     }
-    else
+    else if (this->opts.at(0)->getValue() == "w")
     {
         unsigned int counter = 0;
-        for (const char c : text)
+        // Allows us to skip multiple concatenated ' ' chars (spaces).
+        bool activeSeek = true;
+        for (const unsigned char c : text)
         {
             if (std::isspace(c))
             {
-                counter++;
+                // When a space is encountered...
+                if (activeSeek)
+                {
+                    // ... prevent further isspace chars to be counted ...
+                    activeSeek = false;
+                    counter++;
+                }
+            }
+            else
+            {
+                // ... until we hit a non-isspace char.
+                activeSeek = true;
             }
         }
-        this->outputStream->output(std::to_string(counter + 1));
+        this->outputStream->output(std::to_string(counter + (activeSeek ? 1 : 0)));
     }
 }
 
