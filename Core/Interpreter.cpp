@@ -5,8 +5,8 @@
 #include "Parser.h"
 #include "../Commands/Exceptions/UnknownCommand.h"
 
-Interpreter::Interpreter(const char commandPromptChar, Reader* reader, Parser* parser)
-    : commandPromptChar(commandPromptChar), reader(reader), parser(parser)
+Interpreter::Interpreter(const char commandPromptChar, Reader* reader, Parser* parser, const bool disablePrompt)
+    : commandPromptChar(commandPromptChar), reader(reader), parser(parser), disablePrompt(disablePrompt)
 {
 }
 
@@ -25,7 +25,10 @@ void Interpreter::run()
 {
     while (true)
     {
-        std::cout << this->commandPromptChar << " ";
+        if (!this->disablePrompt)
+        {
+            std::cout << this->commandPromptChar << " ";
+        }
 
         std::string line = this->reader->readLine();
 

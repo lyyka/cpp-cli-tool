@@ -6,7 +6,7 @@
 class Interpreter
 {
 public:
-    explicit Interpreter(char commandPromptChar, Reader* reader, Parser* parser);
+    explicit Interpreter(char commandPromptChar, Reader* reader, Parser* parser, bool disablePrompt = false);
     ~Interpreter();
     void run();
     void setCommandPromptChar(char ch);
@@ -14,6 +14,7 @@ private:
     char commandPromptChar;
     Reader* reader;
     Parser* parser;
+    bool disablePrompt = false;
 };
 
 

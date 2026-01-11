@@ -31,26 +31,17 @@ void BatchCommand::handle(Interpreter* interpreter) const
 {
     const std::string filename = this->argument.at(0)->getToken()->getToken();
 
-    /*
-     * todo: here is the list:
-     *  - Садржај улазног фајла са задатим именом интерпретира као произвољно дуг низ
-        командних линија раздвојених знаком за нови ред и интерпретира све те командне линије
-        као што је описано у овом документу, исто као да су оне учитане са конзоле (тзв. пакетна
-        обрада, енгл. batch). Интерпретира независно једну по једну командну линију све док не
-        наиђе на крај улазног фајла. Свака команда којој није задат аргумент, осим оних које нису
-        првонаведене у цевоводу, преко конзоле учитава потребни аргумент након чега се
-        наставља извршавање преосталих команди. Подразумевани излазни токови команди
-        одговарају излазном току команде batch, али команде могу да дефинишу редирекције
-        излазних токова на појединачном нивоу. Уколико је нека командна линија изазвала
-        грешку, исписује њену поруку о грешци на свој излазни ток грешке и наставља даље на
-        следећу. Улазни фајл може садржати било које команде, па и саму команду batch;
-        рекурзију не треба спречавати, последице њеног извшравања су одговорност корисника.
-     */
-    auto* i = new Interpreter(' ', new FileReader(filename), new Parser(this->outputStream));
-    i->run();
-    delete i;
+    // Clone the outputter to avoid file pointer conflicts when original is opened in truncate mode
+    // The clone uses append mode, ensuring all writes happen sequentially without overwrites.
+    Outputter* clonedOutput = this->outputStream->clone();
 
-    this->outputStream->output("\n");
+    // Run the "inner" interpreter to allow seamless recursions which all work in the same exact way.
+    auto* i = new Interpreter(' ', new FileReader(filename), new Parser(clonedOutput), true);
+    i->run();
+
+    // Delete objects created in this handle.
+    delete i;
+    delete clonedOutput;
 }
 
 bool BatchCommand::validate() const

@@ -29,5 +29,15 @@ FileOutputter::~FileOutputter()
 
 FileOutputter* FileOutputter::clone() const
 {
-    return new FileOutputter(this->filename, this->mode);
+    std::ios_base::openmode cloneMode = this->mode;
+
+    // When cloning a file outputter, since we are cloning for the same file,
+    // we don't want to have 2 "truncate" outputters to the same file since they can easily overwrite each other.
+    // Instead, ALWAYS clone into append mode.
+    if (this->mode & std::ios::trunc)
+    {
+        cloneMode = std::ios::out | std::ios::app;
+    }
+
+    return new FileOutputter(this->filename, cloneMode);
 }

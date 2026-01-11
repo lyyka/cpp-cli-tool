@@ -32,7 +32,8 @@ void TouchCommand::handle(Interpreter* interpreter) const
 {
     const std::string filename = this->argument.at(0)->getToken()->getToken();
     if (std::filesystem::exists(filename)) {
-        throw std::runtime_error("File '" + filename + "' already exists");
+        this->errorOutputStream << "TouchCommand: File " << filename << " already exists!" << std::endl;
+        return;
     }
 
     std::ofstream file(filename);
